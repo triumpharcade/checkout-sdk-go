@@ -16,9 +16,12 @@ func HandleError(statusCode int, status string, requestId string, body []byte) C
 	var details ErrorDetails
 	if len(body) != 0 {
 		if err := json.Unmarshal(body, &details); err != nil {
+			details.RequestID = requestId
+
 			return CheckoutAPIError{
 				StatusCode: http.StatusBadRequest,
-				Status:     "Unparsable error",
+				Status:     string(body),
+				Data:       &details,
 			}
 		}
 	}
